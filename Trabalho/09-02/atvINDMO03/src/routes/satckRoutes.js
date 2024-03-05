@@ -1,0 +1,34 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import Sobre from '../pages/Sobre';
+import Detalhes from '../pages/Detalhes';
+
+const Stack = createNativeStackNavigator();
+
+
+export default function StackRoutes() {
+    return (
+        <Stack.Navigator>
+            
+            <Stack.Screen
+                name='Sobre'
+                component={Sobre}
+                options={{
+                    title: 'Cursos',
+                    headerShown:false,
+                }}
+            />
+
+            <Stack.Screen
+                name='Detalhes'
+                component={Detalhes}
+                options={{
+                    title: 'Cursos',
+                    headerShown:false,
+                }}
+
+            />
+
+        </Stack.Navigator>
+    )
+}
