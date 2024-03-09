@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import api from './src/services/api/api';
+
+import api from '../../services/api/api';
 
 export default function App() {
   const [cliente, setCliente] = useState([]);
