@@ -12,13 +12,38 @@ export default function NovoCliente() {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
+
+    const exibeAlert =() => {
+        setShowAlert(true);
+    }
+
     const salvarCliente = async () => {
 
         try {
-            if (nome == '' || idade == '' || nome == null || idade == null || idade < 1) {
-                setAlertMessage('Preencha corretamente os campos')
+            if (nome == '' || nome == null) {
+                setAlertMessage('Preencha corretamente o Nome')
+                exibeAlert();
                 return;
             }
+            if (idade == '' || idade == null || idade < 1) {
+                setAlertMessage('Informe uma idade maior que zero')
+                exibeAlert();
+                return;
+            }
+
+            const response = await api.post('/clientes', { nome: nome, idade: Number(idade) })
+            .catch(function(error){
+                if(error.response){
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.resquest) {
+                    if((error.resquest._response).include('Failed')) {
+                        console.log('Erro ao conectar com API');
+                    }
+                }
+            })
+
         } catch (error) {
             console.error(error);
         }
