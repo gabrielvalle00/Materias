@@ -21,7 +21,8 @@ export default function Home() {
             <Text style={ {color: 'black'}}>Seja bem vindo!</Text>
             <Button style={ {backgroundColor: 'black'} }title='Abrir pesquisa por ID' onPress={navagaPesquisaID}/>
             <Button title='Abrir cadastro cliente' onPress={navegaNovoCliente} />
-
+            
+            <StatusBar style="auto" />
         </SafeAreaView>
     )
 };
