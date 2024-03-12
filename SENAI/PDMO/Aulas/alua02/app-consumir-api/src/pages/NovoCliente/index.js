@@ -25,6 +25,11 @@ export default function NovoCliente() {
                 exibeAlert();
                 return;
             }
+            if(isNaN(idade)){
+                setAlertMessage('O valor digitado para está incorreto')
+                exibeAlert();
+                return;
+            }
             if (idade == '' || idade == null || idade < 1) {
                 setAlertMessage('Informe uma idade maior que zero')
                 exibeAlert();
@@ -41,8 +46,22 @@ export default function NovoCliente() {
                     if((error.resquest._response).include('Failed')) {
                         console.log('Erro ao conectar com API');
                     }
+                }else {
+                    console.log(error.message);
                 }
-            })
+                console.log(error.config);
+            });
+
+            if(response != undefined){
+                if(response.data[0].affectedRows == 1) {
+                    setAlertMessage('Cliente cadastrado com Sucesso!');
+                    exibeAlert();
+                    setNome('');
+                    setIdade(0);
+                }else{
+                    console.log('O registro não foi inserido, verifique e tente novamente');
+                }
+            }
 
         } catch (error) {
             console.error(error);
@@ -68,7 +87,7 @@ export default function NovoCliente() {
 
             <Text>Idade do Cliente</Text>
             <TextInput style={styles.caixaDeTexto}
-                value={idade}
+                value={idade.toString()}
                 onChangeText={setIdade}
 
             />
@@ -78,7 +97,7 @@ export default function NovoCliente() {
                 onPress={() => { salvarCliente() }}
                 style={styles.alignVH}>
 
-                <Text>Salvar</Text>
+                <Text style={{color:'white', fontWeight: 'bold', fontSize: 20,}}>Salvar</Text>
 
             </TouchableOpacity>
 
@@ -105,8 +124,12 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     alignVH: {
+        backgroundColor:'orange',
         alignItems: 'center',
         justifyContent: 'center',
+        width: 80,
+        height:35,
+        borderRadius:5,
     },
     caixaDeTexto: {
         borderWidth: 1,
