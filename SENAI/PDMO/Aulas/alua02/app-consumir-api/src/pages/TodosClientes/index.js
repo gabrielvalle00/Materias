@@ -21,8 +21,6 @@ export default function TodosClientes() {
     const listarClientes = async () => {
 
         try {
-
-
             const response = await api.get('/clientes')
                 .catch(function (error) {
                     if (error.response) {
@@ -40,7 +38,7 @@ export default function TodosClientes() {
                 });
 
             if (response != undefined) {
-                if (response.data.lenght > 0) {
+                if (response.data.length > 0) {
 
                     let temp = [];
                     for (let i = 0; i < response.data.length; i++) {
@@ -129,7 +127,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     textValue: {
-        color: 'orange',
+        color: 'white',
         fontSize: 18
     }
 })
