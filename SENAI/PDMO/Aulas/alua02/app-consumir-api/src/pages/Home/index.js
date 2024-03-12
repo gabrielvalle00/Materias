@@ -16,11 +16,16 @@ export default function Home() {
         navigation.navigate('NovoCliente')
     }
 
+    const navegaTodosClientes = () =>{
+        navigation.navigate('TodosClientes')
+    }
+
     return (
         <SafeAreaView style = {styles.container}>
             <Text style={ {color: 'black'}}>Seja bem vindo!</Text>
             <Button style={ {backgroundColor: 'black'} }title='Abrir pesquisa por ID' onPress={navagaPesquisaID}/>
             <Button title='Abrir cadastro cliente' onPress={navegaNovoCliente} />
+            <Button title='Exibir todos os clientes' onPress={navegaTodosClientes}/>
             
             <StatusBar style="auto" />
         </SafeAreaView>
