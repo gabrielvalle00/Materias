@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList } from 'react-native';
+import { useNavigation, useRoute, useFocusEffect} from '@react-navigation/native'
 
 import api from '../../services/api/api';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function TodosClientes() {
+    const navigation = useNavigation();
+    const route = useRoute();
 
     let [flatListClientes, setFlatListClientes] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [status, setStatus] = useState(false);
+
+    const navegaEditar = (pId, pNome, pIdade) => {
+        navigation.navigate('EditarCliente', { id: pId, nome: pNome, idade: pIdade })
+
+    }
 
 
     const exibeAlert = () => {
@@ -61,9 +70,23 @@ export default function TodosClientes() {
 
     }
 
+    useEffect( () => {
+        if (route.params?.status) {
+            setStatus(route.params.status)
+            
+        }
+
+    },[route.params?.status])
+
     useEffect(() => {
         listarClientes();
-    }, [])
+    }, [status])
+
+
+    // useFocusEffect(() => {
+    //     listarClientes();
+    // })
+
 
     let listViewItem = (item) => {
         return (
@@ -77,6 +100,14 @@ export default function TodosClientes() {
 
                 <Text style={styles.textHeader}>Idade</Text>
                 <Text style={styles.textValue}>{item.idade}</Text>
+
+                <View style={styles.containerButto}>
+                    <TouchableOpacity onPress={() => {
+                        navegaEditar(item.id, item.nome, item.idade)
+                    }}>
+                        <FontAwesome5 name='edit' color='white' size={18} />
+                    </TouchableOpacity>
+                </View>
 
 
             </View>
@@ -114,7 +145,14 @@ export default function TodosClientes() {
 
 
 const styles = StyleSheet.create({
+    containerButto: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 15
+    },
     modeloCard: {
+
         backgroundColor: 'orange',
         marginBottom: 30,
         padding: 15,
