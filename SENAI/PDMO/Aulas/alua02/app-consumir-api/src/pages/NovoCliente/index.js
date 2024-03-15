@@ -39,9 +39,9 @@ export default function NovoCliente() {
             const response = await api.post('/clientes', { nome: nome, idade: Number(idade) })
             .catch(function(error){
                 if(error.response){
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
+                    console.error(error.response.data);
+                    console.error(error.response.status);
+                    console.error(error.response.headers);
                 } else if (error.resquest) {
                     if((error.resquest._response).include('Failed')) {
                         console.log('Erro ao conectar com API');
@@ -55,9 +55,10 @@ export default function NovoCliente() {
             if(response != undefined){
                 if(response.data[0].affectedRows == 1) {
                     setAlertMessage('Cliente cadastrado com Sucesso!');
-                    exibeAlert();
                     setNome('');
                     setIdade(0);
+                    exibeAlert();
+                   
                 }else{
                     console.log('O registro não foi inserido, verifique e tente novamente');
                 }

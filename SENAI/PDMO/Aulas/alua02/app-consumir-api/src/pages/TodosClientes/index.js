@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList } from 'react-native';
-import { useNavigation, useRoute, useFocusEffect} from '@react-navigation/native'
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native'
 
 import api from '../../services/api/api';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -52,9 +52,9 @@ export default function TodosClientes() {
                     let temp = [];
                     for (let i = 0; i < response.data.length; i++) {
                         temp.push(response.data[i]);
-                        setFlatListClientes(temp);
+                       
                     }
-
+                    setFlatListClientes(temp);
                     temp = [];
 
                 } else {
@@ -70,22 +70,61 @@ export default function TodosClientes() {
 
     }
 
-    useEffect( () => {
-        if (route.params?.status) {
-            setStatus(route.params.status)
-            
+
+    const deletarClientes = async (id) => {
+        try {
+            const response = await api.delete(`/clientes/${id}`)
+                .catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.resquest) {
+                        if ((error.resquest._response).include('Failed')) {
+                            console.log('Erro ao conectar com API');
+                        }
+                    } else {
+                        console.log(error.message);
+                    }
+                    console.log(error.config);
+                });
+
+            if (response != undefined) {
+                if (response.data.length > 0) {
+
+                    let temp = [];
+                    for (let i = 0; i < response.data.length; i++) {
+                        temp.push(response.data[i]);
+                        
+                    }
+                    setFlatListClientes(temp);
+                    temp = [];
+                    setAlertMessage('Registro excluído com sucesso!')
+                    exibeAlert();
+
+                } else {
+                    setAlertMessage('Nenhum registro foi localizado!')
+                    exibeAlert();
+                    return;
+                }
+            }
+
+        } catch (error) {
+            console.error(error);
         }
 
-    },[route.params?.status])
-
-    useEffect(() => {
-        listarClientes();
-    }, [status])
+    }
 
 
-    // useFocusEffect(() => {
-    //     listarClientes();
-    // })
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+            listarClientes();
+        }, [])
+    )
+
+
 
 
     let listViewItem = (item) => {
@@ -102,11 +141,38 @@ export default function TodosClientes() {
                 <Text style={styles.textValue}>{item.idade}</Text>
 
                 <View style={styles.containerButto}>
+
+
+
+
                     <TouchableOpacity onPress={() => {
                         navegaEditar(item.id, item.nome, item.idade)
                     }}>
-                        <FontAwesome5 name='edit' color='white' size={18} />
+                        <FontAwesome5 name='edit' color='white' size={24} />
                     </TouchableOpacity>
+
+
+
+
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert(
+                            'Atenção!',
+                            'Deseja ralmente excluir esse registro!',
+                            [
+                                {
+                                    text: 'Sim',
+                                    onPress: () => {deletarClientes(item.id)}
+                                },
+                                {
+                                    text: 'Cancelar',
+                                    onPress: () => {return}
+                                }
+                            ]
+                        )
+                    }}>
+                        <FontAwesome5 name='trash-alt' color='white' size={24} />
+                    </TouchableOpacity>
+
                 </View>
 
 

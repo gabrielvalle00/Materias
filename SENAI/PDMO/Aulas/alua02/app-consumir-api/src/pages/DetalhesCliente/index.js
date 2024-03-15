@@ -9,42 +9,50 @@ export default function App() {
   const [cliente, setCliente] = useState([]);
   const [idCli, setIdCli] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const handleShowAlert = () => {
+    setShowAlert(true);
+  };
 
 
   const getCliente = async (id) => {
     try {
-      if (id => 0) {
+      if (id > 0) {
         const response = await api.get(`/clientes/${id}`)
           .catch(function (error) {
             if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
+              console.error(error.response.data);
+              console.error(error.response.status);
+              console.error(error.response.headers);
             } else if (error.request) {
               if ((error.request._response).includes('Failed')) {
                 console.log('Erro ao conectar com a API');
               }
             } else {
-              console.log('Erro: ', error.message);
+              console.error('Erro: ', error.message);
             }
           });
 
         if (response != undefined) {
           if (response.data.length === 0) {
             setCliente([])
-            setShowAlert(true)
+            setAlertMessage('Registro não localizado na base de dados, verifique e tente novamente!')
+            handleShowAlert();
           } else {
             setCliente(response.data)
+            
           }
 
         }
 
       } else {
-        setCliente([])
+        setCliente([]);
+        handleShowAlert();
       }
 
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

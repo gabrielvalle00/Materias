@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../../services/api/api';
@@ -45,9 +45,9 @@ export default function EditarCliente() {
             const response = await api.put(`/clientes/${txtId}`, { nome: txtNome, idade: Number(txtIdade) })
                 .catch(function (error) {
                     if (error.response) {
-                        console.log(error.response.data);
-                        console.log(error.response.status);
-                        console.log(error.response.headers);
+                        console.error(error.response.data);
+                        console.error(error.response.status);
+                        console.error(error.response.headers);
                     } else if (error.resquest) {
                         if ((error.resquest._response).include('Failed')) {
                             console.log('Erro ao conectar com API');
@@ -61,10 +61,11 @@ export default function EditarCliente() {
             if (response != undefined) {
                 if (response.data[0].changedRows == 1) {
                     setAlertMessage('Cliente alterado com Sucesso!');
-                    exibeAlert();
                     setTxtId('');
                     setTxtNome('');
                     setTxtIdade('');
+                    exibeAlert();
+                    
                 } else {
                     console.log('O registro não foi alterado, verifique e tente novamente');
                 }
