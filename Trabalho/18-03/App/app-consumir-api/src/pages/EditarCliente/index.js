@@ -12,7 +12,9 @@ export default function EditarCliente() {
 
     const [txtId, setTxtId] = useState(route.params?.id);
     const [txtNome, setTxtNome] = useState(route.params?.nome);
-    const [txtIdade, setTxtIdade] = useState(route.params?.idade);
+    const [txtTelCelular, setTxtTelCelular] = useState(route.params?.telefone_celular)
+    const [txtTelFixo, setTxtTelFixo] = useState(route.params?.telefone_fixo);
+    const [txtEmail, setTxtEmail] = useState(route.params?.email);
 
 
     const [showAlert, setShowAlert] = useState(false);
@@ -31,18 +33,13 @@ export default function EditarCliente() {
                 exibeAlert();
                 return;
             }
-            if (isNaN(txtIdade)) {
-                setAlertMessage('O valor digitado para idade está incorreto')
-                exibeAlert();
-                return;
-            }
-            if (txtIdade == '' || txtIdade == null || txtIdade < 1) {
-                setAlertMessage('Informe uma idade maior que zero')
+            if (txtTelCelular.lenght === 11 || txtTelFixo.lenght === 10) {
+                setAlertMessage('O valor digitado para está incorreto')
                 exibeAlert();
                 return;
             }
 
-            const response = await api.put(`/clientes/${txtId}`, { nome: txtNome, idade: Number(txtIdade) })
+            const response = await api.put(`/clientes/${txtId}`, { nome: txtNome, telefone_celular: txtTelCelular, telefone_fixo: txtTelFixo, email: txtEmail })
                 .catch(function (error) {
                     if (error.response) {
                         console.error(error.response.data);
@@ -63,9 +60,11 @@ export default function EditarCliente() {
                     setAlertMessage('Cliente alterado com Sucesso!');
                     setTxtId('');
                     setTxtNome('');
-                    setTxtIdade('');
+                    setTxtTelCelular('');
+                    setTxtTelFixo('');
+                    setTxtEmail('');
                     exibeAlert();
-                    
+
                 } else {
                     console.log('O registro não foi alterado, verifique e tente novamente');
                 }
@@ -101,10 +100,24 @@ export default function EditarCliente() {
             />
 
 
-            <Text>Idade do Cliente</Text>
+            <Text>Telefone Celular do Cliente</Text>
             <TextInput style={styles.caixaDeTexto}
-                value={txtIdade.toString()}
-                onChangeText={setTxtIdade}
+                value={txtTelCelular.toString()}
+                onChangeText={setTxtTelCelular}
+
+            />
+
+            <Text>Telefone Fixo do Cliente</Text>
+            <TextInput style={styles.caixaDeTexto}
+                value={txtTelFixo.toString()}
+                onChangeText={setTxtTelFixo}
+
+            />
+
+            <Text>Telefone Fixo do Cliente</Text>
+            <TextInput style={styles.caixaDeTexto}
+                value={txtEmail.toString()}
+                onChangeText={setTxtEmail}
 
             />
 
@@ -146,7 +159,7 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     alignVH: {
-        backgroundColor: 'orange',
+        backgroundColor: 'purple',
         alignItems: 'center',
         justifyContent: 'center',
         width: 80,

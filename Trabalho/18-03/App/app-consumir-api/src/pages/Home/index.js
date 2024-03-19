@@ -1,37 +1,50 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {Button, StyleSheet, Text, SafeAreaView } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
-
+import { StyleSheet, Text, SafeAreaView, TouchableOpacity, View, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Home() {
-
     const navigation = useNavigation();
 
     const navagaPesquisaID = () => {
-        navigation.navigate('DetalhesCliente')
+        navigation.navigate('DetalhesCliente');
     };
 
     const navegaNovoCliente = () => {
-        navigation.navigate('NovoCliente')
-    }
+        navigation.navigate('NovoCliente');
+    };
 
-    const navegaTodosClientes = () =>{
-        navigation.navigate('TodosClientes')
-    }
+    const navegaTodosClientes = () => {
+        navigation.navigate('TodosClientes');
+    };
 
     return (
-        <SafeAreaView style = {styles.container}>
-            <Text style={ {color: 'black'}}>Seja bem vindo!</Text>
-            <Button style={ {backgroundColor: 'black'} }title='Abrir pesquisa por ID' onPress={navagaPesquisaID}/>
-            <Button title='Abrir cadastro cliente' onPress={navegaNovoCliente} />
-            <Button title='Exibir todos os clientes' onPress={navegaTodosClientes}/>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.card}>
+                <Image source={require('../../assets/Id.png')} style={styles.cardImage} />
+                <TouchableOpacity style={styles.button} onPress={navagaPesquisaID}>
+                    <Text style={styles.buttonText}>Pesquisar por ID</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.card}>
+                <Image source={require('../../assets/cadastrar.png')} style={styles.cardImage} />
+                <TouchableOpacity style={styles.button} onPress={navegaNovoCliente}>
+                    <Text style={styles.buttonText}>Cadastrar Novo Cliente</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.card}>
+                <Image source={require('../../assets/todos.png')} style={styles.cardImage} />
+                <TouchableOpacity style={styles.button} onPress={navegaTodosClientes}>
+                    <Text style={styles.buttonText}>Exibir Todos os Clientes</Text>
+                </TouchableOpacity>
+            </View>
             
             <StatusBar style="auto" />
         </SafeAreaView>
-    )
+    );
 };
-
 
 const styles = StyleSheet.create({
     container: {
@@ -39,6 +52,37 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 10,
+        padding: 20,
+    },
+    card: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    cardImage: {
+        width: 80,
+        height: 80,
+        marginBottom: 10,
+        marginLeft: 35
+    },
+    button: {
+        backgroundColor: 'purple',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 10,
+    },
+    buttonText: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: 'white',
     },
 });
