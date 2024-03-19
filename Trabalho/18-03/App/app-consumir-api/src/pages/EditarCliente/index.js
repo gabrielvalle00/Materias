@@ -1,45 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import api from '../../services/api/api';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import api from '../../services/api/api';
 
 export default function EditarCliente() {
+
     const navigation = useNavigation();
     const route = useRoute();
-
-
-    const [txtId, setTxtId] = useState(route.params?.id);
-    const [txtNome, setTxtNome] = useState(route.params?.nome);
-    const [txtTelCelular, setTxtTelCelular] = useState(route.params?.telefone_celular)
-    const [txtTelFixo, setTxtTelFixo] = useState(route.params?.telefone_fixo);
-    const [txtEmail, setTxtEmail] = useState(route.params?.email);
-
-
+    
+    const [nome, setNome] = useState(route.params?.nome); 
+    const [telCelular, setTelCelular] = useState(route.params?.telefone_celular);
+    const [telFixo, setTelFixo] = useState(route.params?.telefone_fixo);
+    const [email, setEmail] = useState(route.params?.email);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-
+    const [buttonScale] = useState(new Animated.Value(1)); 
 
     const exibeAlert = () => {
         setShowAlert(true);
     }
 
-    const editarCliente = async () => {
+    const salvarCliente = async () => {
 
         try {
-            if (txtNome == '' || txtNome == null) {
+            if (nome == '' || nome == null) {
                 setAlertMessage('Preencha corretamente o Nome')
                 exibeAlert();
                 return;
             }
-            if (txtTelCelular.lenght === 11 || txtTelFixo.lenght === 10) {
+            if (telCelular.lenght === 11 || telFixo.lenght === 10) {
                 setAlertMessage('O valor digitado para está incorreto')
                 exibeAlert();
                 return;
             }
 
-            const response = await api.put(`/clientes/${txtId}`, { nome: txtNome, telefone_celular: txtTelCelular, telefone_fixo: txtTelFixo, email: txtEmail })
+
+            const response = await api.post('/clientes', { nome: nome, telefone_celular: telCelular, telefone_fixo: telFixo, email: email })
                 .catch(function (error) {
                     if (error.response) {
                         console.error(error.response.data);
@@ -56,17 +54,16 @@ export default function EditarCliente() {
                 });
 
             if (response != undefined) {
-                if (response.data[0].changedRows == 1) {
-                    setAlertMessage('Cliente alterado com Sucesso!');
-                    setTxtId('');
-                    setTxtNome('');
-                    setTxtTelCelular('');
-                    setTxtTelFixo('');
-                    setTxtEmail('');
+                if (response.data[0].affectedRows == 1) {
+                    
+                    setNome('');
+                    setTelCelular('');
+                    setTelFixo('');
+                    setAlertMessage('Cliente cadastrado com Sucesso!');
                     exibeAlert();
 
                 } else {
-                    console.log('O registro não foi alterado, verifique e tente novamente');
+                    console.log('O registro não foi inserido, verifique e tente novamente');
                 }
             }
 
@@ -76,73 +73,68 @@ export default function EditarCliente() {
 
     }
 
+    const handleButtonPress = () => {
+        Animated.sequence([
+            Animated.timing(buttonScale, {
+                toValue: 0.9,
+                duration: 100,
+                useNativeDriver: true,
+            }),
+            Animated.timing(buttonScale, {
+                toValue: 1,
+                duration: 100,
+                useNativeDriver: true,
+            }),
+        ]).start(() => salvarCliente());
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.cardTitle}>
+            <Animated.View style={[styles.card, { opacity: 1, transform: [{ scale: buttonScale }] }]}>
+                <View style={styles.cardTitle}>
+                    <Text style={styles.title}>Preencha os campos abaixo:</Text>
+                </View>
 
-                <Text style={styles.title}>Edite os campos abaixo:</Text>
+                <Text>Nome do Cliente</Text>
+                <TextInput
+                    style={styles.caixaDeTexto}
+                    value={nome}
+                    onChangeText={setNome}
+                />
 
-            </View>
+                <Text>Telefone Celular do Cliente</Text>
+                <TextInput
+                    style={styles.caixaDeTexto}
+                    value={telCelular}
+                    onChangeText={setTelCelular}
+                />
 
-            <Text>ID</Text>
-            <TextInput style={styles.caixaDeTexto}
-                value={txtId.toString()}
-                onChangeText={setTxtId}
-                readOnly
+                <Text>Telefone Fixo do Cliente</Text>
+                <TextInput
+                    style={styles.caixaDeTexto}
+                    value={telFixo}
+                    onChangeText={setTelFixo}
+                />
 
-            />
+                <Text>E-mail do Cliente</Text>
+                <TextInput
+                    style={styles.caixaDeTexto}
+                    value={email}
+                    onChangeText={setEmail}
+                />
 
-            <Text>Nome do Cliente</Text>
-            <TextInput style={styles.caixaDeTexto}
-                value={txtNome}
-                onChangeText={setTxtNome}
-
-            />
-
-
-            <Text>Telefone Celular do Cliente</Text>
-            <TextInput style={styles.caixaDeTexto}
-                value={txtTelCelular.toString()}
-                onChangeText={setTxtTelCelular}
-
-            />
-
-            <Text>Telefone Fixo do Cliente</Text>
-            <TextInput style={styles.caixaDeTexto}
-                value={txtTelFixo.toString()}
-                onChangeText={setTxtTelFixo}
-
-            />
-
-            <Text>Telefone Fixo do Cliente</Text>
-            <TextInput style={styles.caixaDeTexto}
-                value={txtEmail.toString()}
-                onChangeText={setTxtEmail}
-
-            />
-
-
-            <TouchableOpacity
-                onPress={() => { editarCliente() }}
-                style={styles.alignVH}>
-
-                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20, }}>Salvar</Text>
-
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handleButtonPress}
+                    style={styles.alignVH}>
+                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Cadastrar</Text>
+                </TouchableOpacity>
+            </Animated.View>
 
             {showAlert && (
                 Alert.alert(
                     'Atenção',
                     alertMessage,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                setShowAlert(false);
-                                navigation.navigate('TodosClientes', { status: true });
-
-                            }
-                        }
-                    ]
+                    [{ text: 'OK', onPress: () => setShowAlert(false) }]
                 )
             )}
 
@@ -152,35 +144,50 @@ export default function EditarCliente() {
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         alignItems: 'center',
-        gap: 10,
+        justifyContent: 'center',
+        marginBottom:300
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        marginHorizontal: 20,
+        marginVertical: 50,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     alignVH: {
         backgroundColor: 'purple',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 80,
+        width: 110,
         height: 35,
-        borderRadius: 5,
+        borderRadius: 10,
+        marginTop: 10,
+        marginLeft: 75
     },
     caixaDeTexto: {
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 5,
         padding: 5,
-        width: '80%'
+        marginVertical: 5,
     },
     cardTitle: {
-        paddingBottom: 30,
-        alignItems: 'center'
-
+        paddingBottom: 10,
+        alignItems: 'center',
     },
     title: {
         fontSize: 20,
-        fontWeight: 'bold'
-    }
-
+        fontWeight: 'bold',
+    },
 });

@@ -6,6 +6,6 @@ app.use(express.json());
 
 app.use('/', clienteRoute);
 
-app.listen(3100, () => {
+app.listen(8000, () => {
     console.log("Servidor respondendo na porta 3100");
 });

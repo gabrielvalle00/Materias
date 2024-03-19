@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     },
     modeloCard: {
 
-        backgroundColor: 'orange',
+        backgroundColor: 'purple',
         marginBottom: 30,
         padding: 15,
         borderRadius: 10,

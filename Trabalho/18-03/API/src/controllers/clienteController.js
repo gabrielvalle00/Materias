@@ -39,8 +39,8 @@ const clienteController = {
         const result2 = await clienteModel.insertCliente({ nome: nome, telefone_celular: telefone_celular, telefone_fixo: telefone_fixo, email:email});
 
         
-        const clientes = await clienteModel.selectCliente();
-        return res.json(clientes);
+        // const clientes = await clienteModel.selectCliente();
+        return res.json(result2);
     },
 
     //UPDATE - ATUALIZANDO UM CLIENTE
@@ -49,8 +49,8 @@ const clienteController = {
         const { nome, telefone_celular, telefone_fixo, email } = req.body;
         const result2 = await clienteModel.updateCliente(id, { nome: nome, telefone_celular: telefone_celular, telefone_fixo: telefone_fixo, email:email });
 
-        const clientes = await clienteModel.selectCliente();
-        return res.json(clientes);
+        // const clientes = await clienteModel.selectCliente();
+        return res.json(result2);
     },
 
     // EXCLUINDO UM CLIENTE

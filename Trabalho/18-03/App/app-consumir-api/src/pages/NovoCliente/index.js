@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import api from '../../services/api/api';
 
 export default function NovoCliente() {
     const [nome, setNome] = useState('');
@@ -10,37 +11,83 @@ export default function NovoCliente() {
     const [email, setEmail] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-    const [buttonScale] = useState(new Animated.Value(1)); // Para animação do botão
+    const [buttonScale] = useState(new Animated.Value(1));
 
     const exibeAlert = () => {
         setShowAlert(true);
     }
 
-    const salvarCliente = async () => {
-        try {
-            // Lógica de validação omitida para simplificar
+    const ocultAlert = () => {
+        setShowAlert(false);
+    }
 
-            const response = await api.post('/clientes', { nome, telefone_celular: telCelular, telefone_fixo: telFixo, email })
+    useEffect(() => {
+
+        if (showAlert) {
+
+            Alert.alert(
+                'Atenção',
+                alertMessage,
+                [{ text: 'OK', onPress: () => ocultAlert(false) }]
+            )
+        }
+
+    }, [showAlert])
+
+
+
+    const salvarCliente = async () => {
+
+        try {
+            if (nome == '' || nome == null) {
+                setAlertMessage('Preencha corretamente o Nome')
+                exibeAlert();
+                return;
+            }
+            if (telCelular.length !== 11 || telFixo.length !== 10) {
+                setAlertMessage('O valor digitado para telefone está incorreto')
+                exibeAlert();
+                return;
+            }
+
+
+            const response = await api.post('/clientes', { nome: nome, telefone_celular: telCelular, telefone_fixo: telFixo, email: email })
                 .catch(function (error) {
-                    // Tratamento de erro omitido para simplificar
+                    if (error.response) {
+                        console.error(error.response.data);
+                        console.error(error.response.status);
+                        console.error(error.response.headers);
+                    } else if (error.resquest) {
+                        if ((error.resquest._response).include('Failed')) {
+                            console.log('Erro ao conectar com API');
+                        }
+                    } else {
+                        console.log(error.message);
+                    }
+                    console.log(error.config);
                 });
 
-            if (response && response.data[0].affectedRows === 1) {
-                setAlertMessage('Cliente cadastrado com Sucesso!');
-                setNome('');
-                setTelCelular('');
-                setTelFixo('');
-                exibeAlert();
-            } else {
-                console.log('O registro não foi inserido, verifique e tente novamente');
+            if (response != undefined) {
+                if (response.data[0].affectedRows == 1) {
+
+                    setNome('');
+                    setTelCelular('');
+                    setTelFixo('');
+                    setAlertMessage('Cliente cadastrado com Sucesso!');
+                    exibeAlert();
+
+                } else {
+                    console.log('O registro não foi inserido, verifique e tente novamente');
+                }
             }
+
         } catch (error) {
             console.error(error);
         }
+
     }
 
     const handleButtonPress = () => {
-        // Animação do botão ao pressionar
         Animated.sequence([
             Animated.timing(buttonScale, {
                 toValue: 0.9,
@@ -97,13 +144,6 @@ export default function NovoCliente() {
                 </TouchableOpacity>
             </Animated.View>
 
-            {showAlert && (
-                Alert.alert(
-                    'Atenção',
-                    alertMessage,
-                    [{ text: 'OK', onPress: () => setShowAlert(false) }]
-                )
-            )}
 
             <StatusBar style="auto" />
         </SafeAreaView>
@@ -115,7 +155,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom:300
+        marginBottom: 300
     },
     card: {
         backgroundColor: '#fff',

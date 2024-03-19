@@ -20,10 +20,13 @@ export default function Home() {
 
     return (
         <SafeAreaView style={styles.container}>
+
+          
+
             <View style={styles.card}>
                 <Image source={require('../../assets/Id.png')} style={styles.cardImage} />
                 <TouchableOpacity style={styles.button} onPress={navagaPesquisaID}>
-                    <Text style={styles.buttonText}>Pesquisar por ID</Text>
+                    <Text style={styles.buttonText}>Pesquisar por Cliente</Text>
                 </TouchableOpacity>
             </View>
 
@@ -58,21 +61,22 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,
+        width:'75%',
         marginBottom: 20,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 8,
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
     },
     cardImage: {
-        width: 80,
-        height: 80,
+        width: 120,
+        height: 100,
         marginBottom: 10,
-        marginLeft: 35
+        marginLeft: 80
     },
     button: {
         backgroundColor: 'purple',
@@ -82,6 +86,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 12,
+        marginLeft: 45,
         fontWeight: 'bold',
         color: 'white',
     },
