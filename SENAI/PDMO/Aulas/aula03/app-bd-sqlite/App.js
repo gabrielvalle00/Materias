@@ -31,7 +31,7 @@ export default function App() {
       tx.executeSql('INSERT INTO clientes (NOME) VALUES (?)',
         [nome],
         (_,) => {
-          Alert.alert('Info','Registro inserido com sucesso')
+          Alert.alert('Info', 'Registro inserido com sucesso')
           setNome('');
           atualizaLista();
         },
@@ -58,8 +58,8 @@ export default function App() {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM clientes WHERE id=? ',
         [id],
-        (_, ) => {
-          Alert.alert('Info','Registro Excluído com sucesso')
+        (_,) => {
+          Alert.alert('Info', 'Registro Excluído com sucesso')
           atualizaLista();
         },
         (_, error) => {
@@ -70,9 +70,9 @@ export default function App() {
     })
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     atualizaLista();
-  },[]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -100,16 +100,18 @@ export default function App() {
               [
                 {
                   text: 'Sim',
-                  onPress: () => {deletarDaLista(item.id)}
+                  onPress: () => { deletarDaLista(item.id) }
                 },
                 {
                   text: 'Cancelar',
-                  onPress: () => {return}
+                  onPress: () => { return }
                 }
               ]
             )
           }}>
-            <FontAwesome5 name='trash-alt' color='orange' size={24} />
+            <View style={styles.trashIconContainer}>
+              <FontAwesome5 name='trash-alt' color='red' size={24} />
+            </View>
           </TouchableOpacity>
         </View>
       ))}
@@ -171,4 +173,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  trashIconContainer: {
+    position: 'absolute',
+    top: -15,
+    right: 5,
+    opacity: 0.5,
+  }
 });
