@@ -12,7 +12,7 @@ const db = new DatabaseConnection.getConnection;
 export default function App() {
   const [nome, setNome] = useState(null);
   const [registros, setRegistros] = useState([]);
-  const [operacao, setOperacao] = useState('Incluir');
+  const [operacao, setOperacao] = useState('Adicionar');
   const [id, setId] = useState(null);
 
 
@@ -26,7 +26,7 @@ export default function App() {
         (_, error) => console.log(error),
       );
     });
-  }, []);
+  }, [registros]);
 
   const adicionarCliente = () => {
 
@@ -35,7 +35,7 @@ export default function App() {
       return;
     }
 
-    if(operacao === 'Incluir') {
+    if (operacao === 'Adicionar') {
       db.transaction(tx => {
         tx.executeSql('INSERT INTO clientes (NOME) VALUES (?)',
           [nome],
@@ -50,13 +50,17 @@ export default function App() {
           }
         );
       });
-    }else if(operacao === 'Editar') {
+    } else if (operacao === 'Editar') {
       db.transaction(tx => {
         tx.executeSql('UPDATE clientes SET NOME=? WHERE ID=?',
           [nome, id],
-          (_, {rowsAffected}) => {
-            Alert.alert('Info', 'Registro Editado com sucesso')
+          (_, { rowsAffected }) => {
+            if (rowsAffected === 1)
+              Alert.alert('Info', 'Registro Editado com sucesso');
+            else if (rowsAffected === 0)
+              Alert.alert('Alerta', 'O registro não foi localizado');
             setNome('');
+            setOperacao('Adicionar');
             atualizaLista();
           },
           (_, error) => {
@@ -65,7 +69,7 @@ export default function App() {
           }
         );
       });
-    }    
+    }
   };
 
   const atualizaLista = () => {
@@ -103,15 +107,75 @@ export default function App() {
   }, []);
 
 
-  const buttonPress = (nome) =>{
-    setNome (nome);
+  const buttonPress = (nome, id) => {
+    setNome(nome);
+    setId(id);
+    setOperacao('Editar');
   }
+
+
+
+  /**
+   * Função utilizada para excluir tabelas e bancos
+   */
+
+  const deleteDatabase = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        [],
+        (_,{rows}) => {
+          rows._array.forEach(table => {
+            tx.executeSql(
+              `DROP TABLE IF EXISTS ${table.name}`,
+              [],
+              () => {
+                console.log(`Tabela ${table.nome} excluida com sucesso!`);
+                setRegistros([]);
+              },
+              (_, error) => {
+                console.error(`Error ao excluir a tabela ${table.nome}:`, error);
+                Alert.alert('Erro', `Ocorreu um erro ao excluir a tabela ${table.name}`)
+              }
+            )
+            
+          });
+        }
+      )
+    })
+  }
+
+
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.androidSafeArea}>
         <View style={styles.container}>
           <View style={styles.card1}>
+
+          <TouchableOpacity onPress={() => {
+                  Alert.alert(
+                    'Atenção!',
+                    'Deseja realmente excluir a base de dados, essa ação não podera ser desfeita!',
+                    [
+                      {
+                        text: 'Sim',
+                        onPress: () => { deleteDatabase() }
+                      },
+                      {
+                        text: 'Cancelar',
+                        onPress: () => { return }
+                      }
+                    ]
+                  )
+                }}>
+                  <View style={styles.earthIconContainer}>
+                    <FontAwesome6 name='eraser' color='red' size={32} />
+                  </View>
+                </TouchableOpacity>
+
+
+
             <Text style={styles.title}>Cadastro</Text>
             <TextInput
               style={styles.input}
@@ -120,7 +184,7 @@ export default function App() {
               placeholder='Digite um Nome'
             />
             <TouchableOpacity style={styles.addButton} onPress={adicionarCliente}>
-              <Text style={styles.buttonText}>Adicionar</Text>
+              <Text style={styles.buttonText}>{operacao === 'Editar' ? 'Editar' : 'Adicionar'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -151,10 +215,10 @@ export default function App() {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { 
+                <TouchableOpacity onPress={() => {
                   buttonPress(item.nome), setId(item.id), setOperacao('Editar')
                 }}>
-                  
+
                   <View style={styles.editIconContainer}>
                     <FontAwesome6 name='pen-to-square' color='grey' size={24} />
                   </View>
@@ -256,12 +320,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -15,
     right: 5,
-    opacity: 0.5,
+    
   },
   editIconContainer: {
     position: 'absolute',
     top: -15,
     right: 35,
-    opacity: 0.5,
+    
+  },
+  earthIconContainer: {
+    position: 'absolute',
+    top:-3,
+    right: 5,
   }
 });
