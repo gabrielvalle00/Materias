@@ -8,6 +8,8 @@ const EditarFilmeScreen = () => {
     const { filmeId } = route.params;
     const navigation = useNavigation();
 
+
+    const [id, setId] = useState(route.params?.id);
     const [nomeFilme, setNomeFilme] = useState(route.params?.nome_filme);
     const [genero, setGenero] = useState(route.params?.genero);
     const [classificacao, setClassificacao] = useState(route.params?.classificacao);
@@ -33,7 +35,7 @@ const EditarFilmeScreen = () => {
     const handleSalvarEdicao = async () => {
         try {
             
-            await editarFilme(filmeId, nomeFilme, genero, classificacao);
+            await editarFilme( nomeFilme, genero, classificacao, id);
             Alert.alert('Sucesso', 'Filme atualizado com sucesso.');
             navigation.goBack(); 
         } catch (error) {

@@ -6,10 +6,11 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const windowWidth = Dimensions.get('window').width;
 
+
 const VisualizarFilmesScreen = () => {
     useEffect(() => {
         initDatabase();
-        carregarFilmes(); // Carrega os filmes quando o componente é montado
+        carregarFilmes();
     }, []);
 
     const [filmes, setFilmes] = useState([]);
@@ -25,7 +26,7 @@ const VisualizarFilmesScreen = () => {
         }
     };
 
-    const navegaEditar = (filme) => {
+    const EditarFilmeScreen = (filme) => {
         navigation.navigate('EditarFilme', filme);
     };
 
@@ -40,7 +41,7 @@ const VisualizarFilmesScreen = () => {
                     onPress: async () => {
                         try {
                             await deletarFilme(id);
-                            carregarFilmes(); // Atualiza a lista de filmes após a exclusão
+                            carregarFilmes(); 
                         } catch (error) {
                             console.error('Erro ao excluir filme:', error);
                             Alert.alert('Erro', 'Falha ao excluir filme. Por favor, tente novamente.');
@@ -54,20 +55,29 @@ const VisualizarFilmesScreen = () => {
 
     const renderItem = ({ item }) => (
         <View style={[styles.card, { width: windowWidth * 0.8 }]}>
-            <FontAwesome6 name="film" size={60} color="#000" style={styles.filmIcon} />
-            <Text style={styles.text}>Nome: {item.nome_filme}</Text>
-            <Text style={styles.text}>Gênero: {item.genero}</Text>
-            <Text style={styles.text}>Classificação: {item.classificacao}</Text>
-            <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={() => navegaEditar(item)} style={styles.button}>
-                    <FontAwesome6 name="pencil" size={20} color="blue" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleExcluirFilme(item.id)} style={styles.button}>
-                    <FontAwesome6 name="trash-alt" size={20} color="red" />
-                </TouchableOpacity>
-            </View>
+        <FontAwesome6 name="film" size={60} color="#000" style={styles.filmIcon} />
+        <View style={styles.infoContainer}>
+            <Text style={styles.label}>ID:</Text>
+            <Text style={styles.text}>{item.id}</Text>
+            <Text style={styles.label}>Nome:</Text>
+            <Text style={styles.text}>{item.nome_filme}</Text>
+            <Text style={styles.label}>Gênero:</Text>
+            <Text style={styles.text}>{item.genero}</Text>
+            <Text style={styles.label}>Classificação:</Text>
+            <Text style={styles.text}>{item.classificacao}</Text>
+            <Text style={styles.label}>Data de Inserção:</Text>
+            <Text style={styles.text}>{item.dataInsercao}</Text>
         </View>
-    );
+        <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={() =>  EditarFilmeScreen(item)} style={styles.button}>
+                <FontAwesome6 name="pencil" size={20} color="blue" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleExcluirFilme(item.id)} style={styles.button}>
+                <FontAwesome6 name="trash-alt" size={20} color="red" />
+            </TouchableOpacity>
+        </View>
+    </View>
+);
 
     return (
         <View style={styles.container}>
@@ -102,6 +112,15 @@ const styles = StyleSheet.create({
     },
     filmIcon: {
         marginBottom: 20,
+    },
+    infoContainer: {
+        flex: 1,
+        alignSelf: 'flex-start',
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
     },
     text: {
         fontSize: 16,

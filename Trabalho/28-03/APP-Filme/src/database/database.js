@@ -10,16 +10,26 @@ export const initDatabase = () => {
   });
 };
 
-export const inserirFilme = (nome_filme, genero, classificacao, data_cad) => {
+export const inserirFilme = (nome_filme, genero, classificacao) => {
   return new Promise((resolve, reject) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'INSERT INTO filmes (nome_filme, genero, classificacao, data_cad) VALUES (?, ?, ?, ?)',
-        [nome_filme, genero, classificacao, data_cad],
-        (_, result) => resolve(result),
-        (_, error) => reject(error)
+      const data_cad = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      db.transaction(
+          (tx) => {
+              tx.executeSql(
+                  'INSERT INTO filmes (nome_filme, genero, classificacao, data_cad) VALUES (?, ?, ?, ?)',
+                  [nome_filme, genero, classificacao, data_cad],
+                  (_, { rowsAffected, insertId }) => {
+                      if (rowsAffected > 0) {
+                          resolve(insertId);
+                      } else {
+                          reject(new Error('Nenhum filme inserido.'));
+                      }
+                  },
+                  (_, error) => reject(error)
+              );
+          },
+          (error) => reject(error)
       );
-    });
   });
 };
 
@@ -27,7 +37,7 @@ export const buscarFilmes = (filtro) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        `SELECT *, strftime('%Y-%m-%d %H:%M:%S', data_cad) AS dataInsercao FROM filmes WHERE nome_filme LIKE ? OR genero LIKE ? OR data_cad LIKE ?`,
+        `SELECT *, strftime('%d/%m/%Y %H:%M:%S', data_cad) AS dataInsercao FROM filmes WHERE nome_filme LIKE ? OR genero LIKE ? OR data_cad LIKE ?`,
         [`%${filtro}%`, `%${filtro}%`, `%${filtro}%`],
         (_, result) => resolve(result),
         (_, error) => reject(error)
