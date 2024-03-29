@@ -16,12 +16,11 @@ const CadastroFilmeScreen = () => {
     const [nomeFilme, setNomeFilme] = useState('');
     const [genero, setGenero] = useState('');
     const [classificacao, setClassificacao] = useState('Livre');
-    const [dataInsercao, setDataInsercao] = useState('');
+    const [animacao] = useState(new Animated.Value(0));
 
     const handleInserirFilme = async () => {
         try {
-            const dataAtual = new Date().toISOString(); // Obtém a data atual em formato ISO
-            await inserirFilme(nomeFilme, genero, classificacao, dataAtual); // Inclui a data de inserção ao inserir o filme
+            await inserirFilme(nomeFilme, genero, classificacao);
             Alert.alert('Sucesso', 'Filme inserido com sucesso.');
             setNomeFilme('');
             setGenero('');
@@ -33,8 +32,18 @@ const CadastroFilmeScreen = () => {
         }
     };
 
+    const fadeIn = () => {
+        Animated.timing(animacao, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    fadeIn();
+
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: animacao }]}>
             <View style={styles.card}>
                 <Text style={styles.title}>Cadastro de Filme</Text>
                 <TextInput
@@ -64,9 +73,11 @@ const CadastroFilmeScreen = () => {
                         <Picker.Item label="18 anos" value="18 anos" />
                     </Picker>
                 </View>
-                <Button title="Inserir Filme" onPress={handleInserirFilme} />
+                <Animated.View style={[styles.buttonContainer, { opacity: animacao }]}>
+                    <Button title="Inserir Filme" onPress={handleInserirFilme} />
+                </Animated.View>
             </View>
-        </View>
+        </Animated.View>
     );
 };
 
@@ -114,6 +125,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
+    },
+    buttonContainer: {
+        marginTop: 10,
+        borderRadius: 5,
+        overflow: 'hidden',
     },
 });
 

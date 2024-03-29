@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import VisualizarFilmesScreen from '../pages/Visualizar';
-import EditarFilmeScreen from '../pages/EditarFilme';
+import EditarFilme from '../pages/EditarFilme';
 
 
 const Stack = createNativeStackNavigator();
 
-export default function StackRoutes() {
+export default function Editar() {
     return (
         <Stack.Navigator>
             
@@ -20,8 +20,8 @@ export default function StackRoutes() {
             />
 
             <Stack.Screen
-                name='Editar'
-                component={EditarFilmeScreen}
+                name='EditarFilme'
+                component={EditarFilme}
             />
 
         </Stack.Navigator>

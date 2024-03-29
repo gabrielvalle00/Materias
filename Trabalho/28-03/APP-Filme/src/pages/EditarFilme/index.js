@@ -2,41 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { editarFilme } from '../../database/database.js';
+import { Picker } from '@react-native-picker/picker';
 
 const EditarFilmeScreen = () => {
     const route = useRoute();
-    const { filmeId } = route.params;
+    const item = route.params;
     const navigation = useNavigation();
 
-
-    const [id, setId] = useState(route.params?.id);
-    const [nomeFilme, setNomeFilme] = useState(route.params?.nome_filme);
-    const [genero, setGenero] = useState(route.params?.genero);
-    const [classificacao, setClassificacao] = useState(route.params?.classificacao);
-
-
-    useEffect(() => {
-        
-        const buscarDetalhesFilme = async () => {
-            try {
-                
-                setNomeFilme('Nome do Filme');
-                setGenero('Gênero do Filme');
-                setClassificacao('Classificação do Filme');
-            } catch (error) {
-                console.error('Erro ao buscar detalhes do filme:', error);
-                Alert.alert('Erro', 'Falha ao buscar detalhes do filme. Por favor, tente novamente.');
-            }
-        };
-
-        buscarDetalhesFilme(); 
-    }, [filmeId]);
+    const [nomeFilme, setNomeFilme] = useState(item.nome_filme);
+    const [genero, setGenero] = useState(item.genero);
+    const [classificacao, setClassificacao] = useState(item.classificacao);
+    const [dataInsercao, setDataInsercao] = useState(item.dataInsercao);
 
     const handleSalvarEdicao = async () => {
         try {
-            
-            await editarFilme( nomeFilme, genero, classificacao, id);
+            await editarFilme(item.id, nomeFilme, genero, classificacao, dataInsercao);
             Alert.alert('Sucesso', 'Filme atualizado com sucesso.');
+            
+            
+            setNomeFilme(nomeFilme);
+            setGenero(genero);
+            setClassificacao(classificacao);
+            setDataInsercao(dataInsercao);
+
             navigation.goBack(); 
         } catch (error) {
             console.error('Erro ao editar filme:', error);
@@ -59,12 +47,21 @@ const EditarFilmeScreen = () => {
                 value={genero}
                 onChangeText={setGenero}
             />
-            <TextInput
-                style={styles.input}
-                placeholder="Classificação"
-                value={classificacao}
-                onChangeText={setClassificacao}
-            />
+            <View style={styles.dropdownContainer}>
+                <Text style={styles.label}>Classificação:</Text>
+                <Picker
+                    selectedValue={classificacao}
+                    onValueChange={(itemValue) => setClassificacao(itemValue)}
+                    style={styles.dropdown}
+                >
+                    <Picker.Item label="Livre" value="Livre" />
+                    <Picker.Item label="10 anos" value="10 anos" />
+                    <Picker.Item label="12 anos" value="12 anos" />
+                    <Picker.Item label="14 anos" value="14 anos" />
+                    <Picker.Item label="16 anos" value="16 anos" />
+                    <Picker.Item label="18 anos" value="18 anos" />
+                </Picker>
+            </View>
             <TouchableOpacity style={styles.button} onPress={handleSalvarEdicao}>
                 <Text style={styles.buttonText}>Salvar</Text>
             </TouchableOpacity>
@@ -78,17 +75,33 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 20,
+        backgroundColor: '#fff',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        textAlign: 'center',
     },
     input: {
         width: '100%',
         height: 50,
         marginBottom: 20,
         padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+    },
+    dropdownContainer: {
+        width: '100%',
+        marginBottom: 20,
+    },
+    label: {
+        marginBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold', 
+    },
+    dropdown: {
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 10,

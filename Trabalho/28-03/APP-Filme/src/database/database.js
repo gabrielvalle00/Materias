@@ -37,7 +37,7 @@ export const buscarFilmes = (filtro) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        `SELECT *, strftime('%d/%m/%Y %H:%M:%S', data_cad) AS dataInsercao FROM filmes WHERE nome_filme LIKE ? OR genero LIKE ? OR data_cad LIKE ?`,
+        `SELECT *, strftime('%d/%m/%Y %H:%M:%S', datetime(data_cad, 'localtime')) AS dataInsercao FROM filmes WHERE nome_filme LIKE ? OR genero LIKE ? OR data_cad LIKE ?`,
         [`%${filtro}%`, `%${filtro}%`, `%${filtro}%`],
         (_, result) => resolve(result),
         (_, error) => reject(error)
@@ -47,12 +47,13 @@ export const buscarFilmes = (filtro) => {
 };
 
 
-export const editarFilme = (id, nome_filme, genero, classificacao, data_cad) => {
+
+export const editarFilme = (id, nome_filme, genero, classificacao) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        'UPDATE filmes SET nome_filme = ?, genero = ?, classificacao = ?, data_cad = ? WHERE id = ?',
-        [nome_filme, genero, classificacao, data_cad, id],
+        'UPDATE filmes SET nome_filme = ?, genero = ?, classificacao = ? WHERE id = ?',
+        [nome_filme, genero, classificacao, id],
         (_, result) => resolve(result),
         (_, error) => reject(error)
       );

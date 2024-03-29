@@ -22,6 +22,7 @@ export default function StackRoutes() {
                 name='Detalhes'
                 component={Detalhes}
             />
+            
 
         </Stack.Navigator>
     )

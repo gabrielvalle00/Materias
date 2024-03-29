@@ -9,7 +9,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import Adicionar from '../pages/Adicionar';
 import StackRoutes from './satckRoutes';
-import VisualizarFilmesScreen from '../pages/Visualizar';
+import Editar from './editar';
 import CustomDrawer from '../components/CustomDrawer';
 import Pesquisa from '../pages/Pesquisa';
 import Home from '../pages/Home';
@@ -58,7 +58,7 @@ export default function Routes() {
 
       <Drawer.Screen
         name='Visualizar'
-        component={VisualizarFilmesScreen}
+        component={Editar}
         options={{
           drawerActiveTintColor: '#8e7cc3',
           drawerInactiveTintColor: 'black',

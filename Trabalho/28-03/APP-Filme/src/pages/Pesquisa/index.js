@@ -43,12 +43,6 @@ const PesquisarFilmesScreen = () => {
                 value={nomeFilme}
                 onChangeText={setNomeFilme}
             />
-            <TextInput
-                style={styles.input}
-                placeholder="Digite o gênero do filme"
-                value={genero}
-                onChangeText={setGenero}
-            />
             <FlatList
                 data={filmes}
                 renderItem={renderItem}

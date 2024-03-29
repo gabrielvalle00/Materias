@@ -6,12 +6,11 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const windowWidth = Dimensions.get('window').width;
 
-
 const VisualizarFilmesScreen = () => {
     useEffect(() => {
         initDatabase();
         carregarFilmes();
-    }, []);
+    }, [buscarFilmes()]);
 
     const [filmes, setFilmes] = useState([]);
     const navigation = useNavigation();
@@ -41,7 +40,7 @@ const VisualizarFilmesScreen = () => {
                     onPress: async () => {
                         try {
                             await deletarFilme(id);
-                            carregarFilmes(); 
+                            carregarFilmes(); // Atualiza os filmes após a exclusão
                         } catch (error) {
                             console.error('Erro ao excluir filme:', error);
                             Alert.alert('Erro', 'Falha ao excluir filme. Por favor, tente novamente.');
@@ -54,7 +53,7 @@ const VisualizarFilmesScreen = () => {
     };
 
     const renderItem = ({ item }) => (
-        <View style={[styles.card, { width: windowWidth * 0.8 }]}>
+        <View style={[styles.card, { width: windowWidth * 0.9 }]}>
         <FontAwesome6 name="film" size={60} color="#000" style={styles.filmIcon} />
         <View style={styles.infoContainer}>
             <Text style={styles.label}>ID:</Text>
@@ -70,10 +69,10 @@ const VisualizarFilmesScreen = () => {
         </View>
         <View style={styles.buttonsContainer}>
             <TouchableOpacity onPress={() =>  EditarFilmeScreen(item)} style={styles.button}>
-                <FontAwesome6 name="pencil" size={20} color="blue" />
+                <FontAwesome6 name="pencil" size={34} color="darkblue" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleExcluirFilme(item.id)} style={styles.button}>
-                <FontAwesome6 name="trash-alt" size={20} color="red" />
+                <FontAwesome6 name="trash-alt" size={34} color="red" />
             </TouchableOpacity>
         </View>
     </View>
@@ -132,6 +131,7 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 10,
+        left:122
     },
 });
 
