@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert, Text, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { initDatabase } from '../../database/database.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { Card, Title, Paragraph } from 'react-native-paper';
 
 export default function Home() {
     useEffect(() => {
@@ -12,35 +12,201 @@ export default function Home() {
 
     const navigation = useNavigation();
 
-    function navegaDetalhes() {
+    function navigateToDetails() {
         navigation.navigate('Detalhes');
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Bem-vindo ao Aplicativo de Compra de Filmes</Text>
-            </View>
 
-            <View style={styles.cardContainer}>
-                <TouchableOpacity onPress={navegaDetalhes}>
-                    <View style={styles.card}>
-                        <Image source={require('../../assets/ka.jpg')} style={styles.cardImage} />
-                    </View>
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={navegaDetalhes}>
-                    <View style={styles.card}>
-                        <Image source={require('../../assets/ka.jpg')} style={styles.cardImage} />
-                    </View>
-                </TouchableOpacity>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Bem-vindo ao Aplicativo de Catálogo de Filmes</Text>
+                </View>
+                
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Ação</Text>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 1</Title>
 
-                <TouchableOpacity onPress={navegaDetalhes}>
-                    <View style={styles.card}>
-                        <Image source={require('../../assets/ka.jpg')} style={styles.cardImage} />
-                    </View>
-                </TouchableOpacity>
-            </View>
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 2</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 3</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Comedia</Text>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 1</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 2</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 3</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Terror & Suspense</Text>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 1</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 2</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 3</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Aventura</Text>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 1</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 2</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 3</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Romance</Text>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 1</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 2</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={navigateToDetails}>
+                            <Card style={styles.card}>
+                                <Card.Cover source={require('../../assets/ka.jpg')} />
+                                <Card.Content>
+                                    <Title>Filme 3</Title>
+
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+
+
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -49,37 +215,35 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 15,
+        paddingHorizontal: 20,
+        paddingTop: 10,
     },
     header: {
-        marginBottom: 20,
+        marginBottom: 10,
     },
     headerText: {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    cardContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        flexWrap: 'wrap',
+    scrollView: {
+        flex: 1,
+        marginBottom: 20,
+    },
+    categoryContainer: {
+        marginBottom: 20,
+    },
+    categoryText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginLeft: 10,
     },
     card: {
         width: 150,
-        height: 200,
-        borderRadius: 10,
-        backgroundColor: '#f0f0f0',
-        marginBottom: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 5,
-    },
-    cardImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 10,
+        height: 250,
+        backgroundColor: 'white',
+        marginBottom: 10,
+        marginRight: 10,
     },
 });
