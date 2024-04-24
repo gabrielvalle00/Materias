@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 
 Notifications.setNotificationHandler({
@@ -9,15 +9,34 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shoulPlaySound: true,
     shouldSetBadge: true,
+    ios: {
+      AllowAlert: true,
+      allowBadge: true,
+      allowSound: true,
+    }
   }),
 });
 
 
 export default function App() {
-  const [expoToken, setExpoToken] = useState('')
+  const [expoToken, setExpoToken] = useState('');
+  const notificationReceivedRef = useRef([]);
+  const notificationResponseRef = useRef();
+
+
+
 
   useEffect(() => {
     rigisterForPushNotificationsAsync().then(token => setExpoToken(token));
+
+    notificationReceivedRef.current = Notifications.addNotificationReceivedListener(notificaion => {
+      console.log('notificação recebida: ', notificaion);
+
+    });
+
+    notificationResponseRef.current = Notifications.addNotificationResponseReceivedListener(notification => {
+      console.log('notificação clicada: ', notification);
+    });
 
   }, []);
 
@@ -32,10 +51,10 @@ export default function App() {
     <View style={styles.container}>
       <Text>Trabalhando com notificação no Expo!</Text>
       <Button
-      title='Enviar notificação local'
-      onPress={async () => {
-        await handleNotification();
-      }}
+        title='Enviar notificação local'
+        onPress={async () => {
+          await handleNotification();
+        }}
       />
       <Text>{expoToken}</Text>
       <StatusBar style="auto" />
@@ -53,7 +72,8 @@ async function schendulePushNotification() {
       //title: 'Notificação local',
       //body: 'Este é um teste de uma notificação local com temporizador exibida apos o tempo determinado',
     },
-    trigger: null,
+    // trigger: null,
+    trigger: { seconds: 5 },
   });
 }
 
@@ -74,6 +94,7 @@ async function rigisterForPushNotificationsAsync() {
   }
 
   token = (await Notifications.getExpoPushTokenAsync({ projectId: '6906f1a5-6e3c-4feb-b2c4-199742119072' })).data;
+  console.log(token);
   return token;
 }
 
