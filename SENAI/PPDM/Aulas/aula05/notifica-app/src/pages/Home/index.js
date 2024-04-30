@@ -1,165 +1,135 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 
-
+// Set up notification handler
 Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shoulPlaySound: true,
-        shouldSetBadge: true,
-        ios: {
-            AllowAlert: true,
-            allowBadge: true,
-            allowSound: true,
-        }
-    }),
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
 });
 
+export default function Home() {
+  const navigation = useNavigation();
 
+  const [expoToken, setExpoToken] = useState(''); 
+  const [notificationReceived, setNotificationReceived] = useState(null);
+  const [allNotifications, setAllNotifications] = useState({ data: [] });
 
+  // Refs to track notifications
+  const notificationReceiveRef = useRef(null);
+  const notificationResponseRef = useRef(null);
 
-export default function App() {
-    const [expoToken, setExpoToken] = useState('');
-    const [notificationReceived, setNotificationReceived] = useState(null);
-    const [notificationResponse, setNotificationResponse] = useState(null);
-    const [allNotifications, setAllNotifications] = useState({ data: [] })
-
-
-
-
-
-
-
-    const notificationReceivedRef = useRef();
-    const notificationResponseRef = useRef();
-
-
-
-
-    useEffect(() => {
-        rigisterForPushNotificationsAsync().then(token => setExpoToken(token));
-
-        notificationReceivedRef.current = Notifications.addNotificationReceivedListener(notificaion => {
-            setNotificationReceived('notificação recebida: ', notificaion);
-
-
-        });
-
-        notificationResponseRef.current = Notifications.addNotificationResponseReceivedListener(notification => {
-            setNotificationResponse('notificação clicada: ', notification);
-        });
-
-    }, []);
-
-
-    useEffect(() => {
-        if (notificationReceived != null) {
-            const { date, request: { content, identifier, trigger } } = notificationReceived
-
-            dados = { date: date, bodyMessage: content.body, titleMessage: content.title }
-
-            setAllNotifications(prevState => ({
-                ...prevState,
-                data: [...prevState.data, dados]
-            }));
-        }
-    }, [notificationReceived]);
-
-
-
-    useEffect(() => {
-        if (allNotifications != null) {
-            console.log(`All: `, allNotifications);
-
-        }
-    }, [allNotifications]);
-
-
-
-
-
-
-
-    async function handleNotification() {
-        schendulePushNotification();
+  useEffect(() => {
+    // Register for push notifications
+    const registerNotifications = async () => {
+      const token = await registerForPushNotificationAsync();
+      setExpoToken(token);
     };
+    registerNotifications();
 
-
-    const navigation = useNavigation();
-
-    const visualizarNotif = () => {
-    navigation.navigate('Notificacoes', {Itens : allNotifications})}
-
-
-
-
-    return (
-        <View style={styles.container}>
-            <Text>Trabalhando com notificação no Expo!</Text>
-            <Button
-                title='Enviar notificação local'
-                onPress={async () => {
-                    await handleNotification();
-                }}
-            />
-
-            <Button
-                title='Visualizar Notificações'
-                onPress={async () => {
-                    await visualizarNotif();
-                }}
-            />
-            <Text>{expoToken}</Text>
-            <StatusBar style="auto" />
-        </View>
+    // Add listeners for notification events
+    notificationReceiveRef.current = Notifications.addNotificationReceivedListener(
+      (notification) => setNotificationReceived(notification)
     );
-}
 
+    notificationResponseRef.current = Notifications.addNotificationResponseReceivedListener(
+      (response) => console.log('Notificação clicada:', response.notification)
+    );
 
-async function schendulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-        content: {
-            title: 'Notificação local',
-            body: 'Este é um teste de notificação local acionado imediatamente após o clique do botão',
+    return () => {
+      // Cleanup listeners when component unmounts
+      if (notificationReceiveRef.current) {
+        Notifications.removeNotificationSubscription(notificationReceiveRef.current);
+      }
+      if (notificationResponseRef.current) {
+        Notifications.removeNotificationSubscription(notificationResponseRef.current);
+      }
+    };
+  }, []);
 
-            //title: 'Notificação local',
-            //body: 'Este é um teste de uma notificação local com temporizador exibida apos o tempo determinado',
-        },
-        // trigger: null,
-        trigger: { seconds: 5 },
-    });
-}
+  useEffect(() => {
+    if (notificationReceived) {
+      const { date, request: { content } } = notificationReceived;
 
+      const dados = {
+        date: date || new Date().toISOString(), // Default to current date if missing
+        bodyMessage: content.body,
+        titleMessage: content.title,
+      };
 
-async function rigisterForPushNotificationsAsync() {
-    let token;
-
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
+      setAllNotifications((prevState) => ({
+        ...prevState,
+        data: [...prevState.data, dados],
+      }));
     }
-    if (finalStatus !== 'granted') {
-        alert('Você não possui permissão para receber notificações!');
-        return;
-    }
+  }, [notificationReceived]);
 
-    token = (await Notifications.getExpoPushTokenAsync({ projectId: '6906f1a5-6e3c-4feb-b2c4-199742119072' })).data;
-    console.log(token);
-    return token;
+  const notificacoes = () => {
+    navigation.navigate('Notificacoes', { itens: allNotifications });
+  };
+
+  const handleNotificationLocal = async () => {
+    await schedulePushNotification();
+  };
+
+  return (
+    <View style={styles.container}>
+      <Button
+        title="Enviar notificação local"
+        onPress={handleNotificationLocal}
+      />
+      <Button
+        title="Exibir notificações"
+        onPress={notificacoes}
+      />
+      <Text>Token Expo: {expoToken}</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
 }
 
+async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Notificação local',
+      body: 'Este é um teste de notificação local acionado diretamente após o clique do botão.',
+    },
+    trigger: null, // Immediate notification
+  });
+}
+
+async function registerForPushNotificationAsync() {
+  let token;
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+
+  if (finalStatus !== 'granted') {
+    alert('Você não tem permissão para receber notificações!');
+    return null;
+  }
+
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+
+  return token;
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
