@@ -1,0 +1,31 @@
+{
+    "nome": "Mario Bueno",
+    "dt_nasc": "02/11/1990",
+    "cpf": "987.654.321-08",
+    "telefone":
+        [
+            { "tipo":"RES", "numero": "(19) 98345-6789" },
+            { "tipo":"CEL", "numero": "(19) 93565-4321" }
+        ],
+    "endereco": [
+        {
+            "logradouro": "Avenida Brasil",
+            "numero": 22,
+            "bairro": "Guanabara",
+            "complemento": null,
+            "cep": "13178-000",
+            "cidade": "Campinas",
+            "uf": "SP"
+        },
+        {
+            "logradouro": "Avenida Carlos Botelho",
+            "numero": 329,
+            "bairro": "Jardim Monte Alto",
+            "complemento": "Casa A",
+            "cep": "13178-000",
+            "cidade": "Piracicaba",
+            "uf": "SP"
+        }
+    ]
+}
+

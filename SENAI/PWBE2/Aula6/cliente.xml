@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dados_clientes>
+    <cliente>
+        <nome>Mario Bueno</nome>
+        <data_nasc>02/11/1990</data_nasc>
+        <cpf>987.654.321-08</cpf>
+        <telefones>
+            <telefone>
+                <tipo>RES</tipo>
+                <numero>(19) 98345-6789</numero>
+            </telefone>
+            <telefone>
+                <tipo>CEL</tipo>
+                <numero>(19) 93565-4321</numero>
+            </telefone>
+        </telefones>
+        <enderecos>
+            <endereco>
+                <logradouro>Avenida Brasil</logradouro>
+                <numero>22</numero>
+                <bairro>Guanabara</bairro>
+                <complemento>null</complemento>
+                <cep>13178-000</cep>
+                <cidade>Campinas</cidade>
+                <uf>SP</uf>
+            </endereco>
+            <endereco>
+                <logradouro>Avenida Carlos Botelho</logradouro>
+                <numero>329</numero>
+                <bairro>Jardim Monte Alto</bairro>
+                <complemento>Casa A</complemento>
+                <cep>13178-000</cep>
+                <cidade>Campinas</cidade>
+                <uf>SP</uf>
+            </endereco>
+        </enderecos>
+    </cliente>
+</dados_clientes>
