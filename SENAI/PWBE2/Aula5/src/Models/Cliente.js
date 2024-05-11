@@ -37,6 +37,9 @@ class Cliente {
         this.Data_nasc = dataFormatada;
         // console.log(this.Data_nasc);
     }
+
+    
 }
+
 
 module.exports = Cliente;
