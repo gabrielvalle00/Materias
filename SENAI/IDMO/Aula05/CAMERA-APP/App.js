@@ -1,7 +1,7 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
 import { Button, Text, TouchableOpacity, View, ImageBackground, Alert, StyleSheet } from 'react-native';
-import * as Medialibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library';
 import { styles } from './src/styles';
 import { FontAwesome6 } from '@expo/vector-icons';
 
@@ -12,9 +12,11 @@ export default function App() {
   const [flashMode, setFlashMode] = useState('off'); //liga/desliga o flash
   const [facing, setFacing] = useState('back'); //troca para a camera traseira
   const [permission, requestPermission] = useCameraPermissions();
+  const [permissionResponseMD, requestPermissionMD] = MediaLibrary.usePermissions();
 
   useEffect(() => {
     requestPermission();
+    requestPermissionMD();
   }, []);
 
   //função para iniciar a camera
@@ -51,8 +53,7 @@ export default function App() {
 
   //função para salvar a foto assim que a imagem for atribuida ao 'useState' 'setCaptureImage'
   const savePhoto = async () => {
-
-    const asset = await Medialibrary.createAssetAsync(capturedImage)
+    const asset = await MediaLibrary.createAssetAsync(capturedImage)
     .then(() => {
       Alert.alert('Foto salva com sucesso!')
     }).catch(error => {
@@ -63,8 +64,7 @@ export default function App() {
 
   //liga e desliga o flash do celular
   const handleFlashMode = async () => {
-    
-
+    setFlashMode(current => (current === 'off' ? 'on' : 'off'));
   };
 
   //alternar entre camera frontal e traseira
@@ -94,9 +94,12 @@ export default function App() {
 
             <View style={styles.containerPrincipalCameraView}>
 
+
               <View style={styles.containerSecundarioCameraView}>
 
                 <TouchableOpacity style={styles.buttonFlash} onPress={handleFlashMode}>
+
+                
 
                   {flashMode === 'off' ?
                     <FontAwesome6 name='bolt' size={24} color='#fff' /> :
